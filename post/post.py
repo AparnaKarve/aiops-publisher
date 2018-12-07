@@ -18,13 +18,14 @@ ROOT_LOGGER.setLevel(application.logger.level)
 ROOT_LOGGER.addHandler(default_handler)
 
 # Upload Service
-UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
+# UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
+UPLOAD_SERVICE_ENDPOINT = 'localhost:8888/api/v1/upload'
 
 
-@application.route("/", methods=['POST'])
-def wake_up():
+def invoke_upload_service():
     """Endpoint for upload and publish requests."""
     input_data = request.get_json(force=True)
+    print(input_data)
     data_id = input_data['id']
     ai_service_id = input_data.get('ai_service', 'generic_ai')
     raw_data = input_data['data']
@@ -97,7 +98,3 @@ def wake_up():
         status='OK',
         message='Data published via Upload service'
     )
-
-
-if __name__ == '__main__':
-    application.run()
