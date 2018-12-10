@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 app = "*"
 connexion = "*"
+swagger-ui-bundle = "*"
 flask = "*"
 requests = ">=2.20.0"
 "gunicorn" = "*"
