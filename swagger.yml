@@ -11,7 +11,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-host: 'localhost:5000'
+host: 'aiops-publisher:8080'
 basePath: /api/v1
 schemes:
   - https
@@ -53,7 +53,6 @@ definitions:
         type: string
         example: '123'
       data:
-        type: string
         example: 'Test Data'
       ai_service:
         type: string
