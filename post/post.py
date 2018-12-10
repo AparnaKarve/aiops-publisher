@@ -18,8 +18,7 @@ ROOT_LOGGER.setLevel(application.logger.level)
 ROOT_LOGGER.addHandler(default_handler)
 
 # Upload Service
-# UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
-UPLOAD_SERVICE_ENDPOINT = 'localhost:8888/api/v1/upload'
+UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
 
 
 def invoke_upload_service():
