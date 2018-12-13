@@ -10,11 +10,17 @@ from flask import Flask, jsonify, request
 from flask.logging import default_handler
 import requests
 
-application = Flask(__name__)  # noqa
+import connexion
+
+# Create the application instance
+application = connexion.App(__name__, specification_dir="./")   #noqa
+
+# read the swagger.yml file to configure the endpoints
+# application.add_api("swagger.yml")
 
 # Set up logging
 ROOT_LOGGER = logging.getLogger()
-ROOT_LOGGER.setLevel(application.logger.level)
+# ROOT_LOGGER.setLevel(application.logger.level)
 ROOT_LOGGER.addHandler(default_handler)
 
 # Upload Service
@@ -100,4 +106,4 @@ def wake_up():
 
 
 if __name__ == '__main__':
-    application.run()
+    application.run(port=5050)
