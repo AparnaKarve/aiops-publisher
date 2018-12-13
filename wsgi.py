@@ -6,56 +6,32 @@ import tempfile
 import json
 import re
 
-from flask import Flask, Blueprint, jsonify, request
+from flask import Flask, jsonify, request
 from flask.logging import default_handler
-from flask_restplus import Api, Resource, reqparse, fields
+from flask_restplus import Api, Resource
 import requests
 
 application = Flask(__name__)  # noqa
-# blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
-# api = Api(blueprint, doc='/documentation')
-#
-# # ns = api.namespace('version', description='current version')
-# # api.add_namespace(ns)
-#
-# application.register_blueprint(blueprint)
-#
-# application.config['SWAGGER_UI_JSONEDITOR'] = True
-
-api = Api(application, version='0.0.1', title='AIOPS Publisher API',
-    description='A simple AIOPS Publisher API',
-)
-
-ns = api.namespace('publish', description='AIOPS Publisher Operations')
-
-parser = api.parser()
-parser.add_argument('id', type=str, required=True, help='The data id', location='json')
-parser.add_argument('data', required=True, help='The raw analyzed data', location='json')
-
-todo = api.model('Todo', {
-    'id': fields.String(required=True, description='The data id'),
-    'data': fields.Raw(required=True, description='The raw analyzed data')
-})
-
-post_parser = reqparse.RequestParser()
-post_parser.add_argument('database',  type=list, help='user data', location='json')
-#
-# test_fields = api.model('Test', {
-#   'id': fields.String(required=True, description='...', example='123'),
-#   'data': Test(example="hey")
-# })
-
-# """ Model for documenting the API"""
-
-# insert_user_data = ns.model("Insert_user_data",
-#                                  {
-#                                      "id":
-# fields.String(attribute='123', description="ID", required=True),
-#                                      "data":
-# fields.Raw(attribute=[], description="Data", required=True)
 
 
-upload_json = api.schema_model('UploadJSON', {
+@application.route('/')
+def index():
+    """Index route."""
+    return jsonify(
+        status='OK',
+        message='AIOPS Publisher is up and running!'
+    )
+
+
+API = Api(application,
+          version='0.0.1',
+          title='AIOPS Publisher API',
+          description='A simple AIOPS Publisher API',
+          doc=False
+          # doc='/doc/'
+      )
+
+PUBLISH_JSON = API.schema_model('PublishJSON', {
     'required': ['id', 'data'],
     'properties': {
         'id': {
@@ -81,30 +57,41 @@ ROOT_LOGGER.setLevel(application.logger.level)
 ROOT_LOGGER.addHandler(default_handler)
 
 # Upload Service
-# UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
-UPLOAD_SERVICE_ENDPOINT = 'localhost:8888/r/insights/platform/upload/api/v1/upload'
+UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
+# UPLOAD_SERVICE_ENDPOINT = 'localhost:8888/r/insights/platform/upload/api/v1/upload'
 
-# @api.route("/version")
-# class Version(Resource):
-#     def get(self):
-#         return jsonify(
-#             status='OK',
-#             message='AIOPS Publisher Version 0.0.1'
-#         )
 
-@ns.route('/')
+@API.route('/')
+class Liveliness(Resource):
+    """Liveliness."""
+
+    @classmethod
+    def get(cls):
+        """Endpoint for Liveliness."""
+        return jsonify(
+            status='OK',
+            message='AIOPS Publisher is up and running!'
+        )
+
+
+@API.route('/api/v1/version')
+class Version(Resource):
+    """Version."""
+
+    @classmethod
+    def get(cls):
+        """Endpoint for getting the current version."""
+        return jsonify(
+            status='OK',
+            message='AIOPS Publisher Version 0.0.1'
+        )
+
+
+@API.route('/api/v1/publish')
 class Publish(Resource):
-    '''Shows a list of all todos, and lets you POST to add new tasks'''
-    # @api.marshal_list_with(listed_todo)
-    # def get(self):
-    #     '''List all todos'''
-    #     return [{'id': id, 'todo': todo} for id, todo in TODOS.items()]
+    """Version."""
 
-    @ns.expect(upload_json, validate=True)
-    # @api.doc(parser=parser)
-    # @api.marshal_with(todo, code=200)
-    # @ns.expect(post_parser)
-    # @api.expect(fields=todo)
+    @API.expect(PUBLISH_JSON, validate=True)
     def post(self):
         """Endpoint for upload and publish requests."""
         input_data = request.get_json(force=True)
@@ -180,7 +167,6 @@ class Publish(Resource):
             status='OK',
             message='Data published via Upload service'
         )
-
 
 
 if __name__ == '__main__':
