@@ -1,4 +1,4 @@
-from prometheus_client import Counter, generate_latest
+from prometheus_client import Counter, generate_latest, CollectorRegistry, multiprocess
 
 # Prometheus Metrics
 METRICS = {
@@ -20,3 +20,9 @@ METRICS = {
 def generate_latest_metrics():
     """Generate Latest."""
     return generate_latest()
+
+def generate_metrics_with_collector_registry():
+    """Generate Latest."""
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry)
+    return generate_latest(registry)

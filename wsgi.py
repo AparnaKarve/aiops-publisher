@@ -10,6 +10,9 @@ from flask import Flask, jsonify, request
 from flask.logging import default_handler
 import requests
 
+aa = os.makedirs("/tmp/aiops_publisher", exist_ok=True)
+os.environ['prometheus_multiproc_dir'] = '/tmp/aiops_publisher' #os.environ.get('prometheus_multiproc_dir', tempfile.mkdtemp())
+
 from publish_json_schema import PublishJSONSchema
 import prometheus_metrics
 
@@ -27,6 +30,8 @@ UPLOAD_SERVICE_ENDPOINT = os.environ.get('UPLOAD_SERVICE_ENDPOINT')
 
 # Schema for the Publish API
 SCHEMA = PublishJSONSchema()
+
+
 
 
 @application.route('/api/v0/version', methods=['GET'])
@@ -124,14 +129,15 @@ def post_publish():
 
     return jsonify(
         status='OK',
-        message='Data published via Upload service'
+        message='Data published via Upload service',
+        dir=os.environ.get('prometheus_multiproc_dir')
     )
 
 
 @application.route("/metrics", methods=['GET'])
 def get_metrics():
     """Metrics Endpoint."""
-    return prometheus_metrics.generate_latest_metrics()
+    return prometheus_metrics.generate_metrics_with_collector_registry()
 
 
 if __name__ == '__main__':
