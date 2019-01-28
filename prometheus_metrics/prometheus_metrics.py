@@ -19,6 +19,10 @@ METRICS = {
 }
 
 
+def child_exit(server, worker):
+    multiprocess.mark_process_dead(worker.pid)
+
+
 def generate_aggregated_metrics():
     """Generate Aggregated Metrics for multiple processes."""
     registry = CollectorRegistry()
