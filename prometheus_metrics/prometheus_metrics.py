@@ -5,17 +5,17 @@ METRICS = {
     'posts': Counter(
         'aiops_publisher_post_requests_total',
         'The total number of post data requests',
-        ['process_id']
+        ['ppid', 'pid']
     ),
     'post_successes': Counter(
         'aiops_publisher_post_requests_successful',
         'The total number of successful post data requests',
-        ['process_id']
+        ['ppid', 'pid']
     ),
     'post_errors': Counter(
         'aiops_publisher_post_requests_exceptions',
         'The total number of post data request exceptions',
-        ['process_id']
+        ['ppid', 'pid']
     ),
 }
 
