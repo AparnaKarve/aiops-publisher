@@ -15,10 +15,10 @@ from publish_json_schema import PublishJSONSchema
 
 # all gunicorn processes in a given instance need to access a common
 # folder in /tmp where the metrics can be recorded
-PROMETHEUS_MULTIPROC_DIR = '/tmp'
+PROMETHEUS_MULTIPROC_DIR = '/tmp/aiops_publisher'
 
 try:
-    os.makedirs(PROMETHEUS_MULTIPROC_DIR, exist_ok=False)
+    os.makedirs(PROMETHEUS_MULTIPROC_DIR, exist_ok=True)
     os.environ['prometheus_multiproc_dir'] = PROMETHEUS_MULTIPROC_DIR
     import prometheus_metrics
 except IOError as e:
