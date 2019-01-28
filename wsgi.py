@@ -101,19 +101,19 @@ def post_publish():
 
     # send a POST request to upload service with files and headers info
     try:
-        prometheus_metrics.METRICS['posts'].inc()
+        prometheus_metrics.METRICS['posts'].labels(str(os.getppid()), str(os.getpid())).inc()
         response = requests.post(
             f'http://{UPLOAD_SERVICE_ENDPOINT}',
             files=files,
             headers=headers
         )
         response.raise_for_status()
-        prometheus_metrics.METRICS['post_successes'].inc()
+        prometheus_metrics.METRICS['post_successes'].labels(str(os.getppid()), str(os.getpid())).inc()
 
     except (ConnectionError, requests.HTTPError, requests.Timeout) as e:
         error_msg = "Error while posting data to Upload service: " + str(e)
         ROOT_LOGGER.exception("Exception: %s", error_msg)
-        prometheus_metrics.METRICS['post_errors'].inc()
+        prometheus_metrics.METRICS['post_errors'].labels(str(os.getppid()), str(os.getpid())).inc()
 
         # TODO Implement Retry here # noqa
         # Retry needs to examine the status_code/exact Exception type
