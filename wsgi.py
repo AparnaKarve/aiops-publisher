@@ -106,6 +106,10 @@ def post_publish():
     ai_service_id = 'aiops-volume-type-validation' #input_data.get('ai_service', 'generic_ai')
     raw_data = input_data['data']
 
+    print("--Raw Data Start---")
+    print(raw_data)
+    print("--Raw Data End---")
+
     try:
         temp_file_name = tempfile.NamedTemporaryFile(delete=False).name
         with tarfile.open(temp_file_name, "w:gz") as tar:
