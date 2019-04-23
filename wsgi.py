@@ -103,7 +103,7 @@ def post_publish():
         ), 400
 
     data_id = input_data['id']
-    ai_service_id = input_data.get('ai_service', 'generic_ai')
+    ai_service_id = 'aiops-volume-type-validation' #input_data.get('ai_service', 'generic_ai')
     raw_data = input_data['data']
 
     try:
